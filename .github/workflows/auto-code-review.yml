@@ -18,7 +18,7 @@ jobs:
       run: |
         git diff origin/main...HEAD > pr_diff.txt
         DIFF_CONTENT=$(cat pr_diff.txt)
-        echo "::set-output name=diff_content::${DIFF_CONTENT}"
+        echo "diff_content=$DIFF_CONTENT" >> $GITHUB_OUTPUT
 
     - name: Send diff text to server
       run: |
