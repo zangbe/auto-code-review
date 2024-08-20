@@ -25,8 +25,16 @@ jobs:
         DIFF_CONTENT=$(git diff ${{ github.event.pull_request.base.ref }}...HEAD | jq -R -s .)
         echo "diff_content=$DIFF_CONTENT" >> $GITHUB_OUTPUT
 
+    # - name: Send diff text to server
+    #   run: |
+    #     curl -X POST https://52ba-220-94-146-69.ngrok-free.app/review \
+    #     -H "Content-Type: application/json" \
+    #     -d "{\"diff\": \"${{ steps.diff.outputs.diff_content }}\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo\": \"${{ github.repository }}\"}"
+
     - name: Send diff text to server
-      run: |
-        curl -X POST https://52ba-220-94-146-69.ngrok-free.app/review \
-        -H "Content-Type: application/json" \
-        -d "{\"diff\": \"${{ steps.diff.outputs.diff_content }}\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo\": \"${{ github.repository }}\"}"
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: 'https://52ba-220-94-146-69.ngrok-free.app/review'
+        method: 'POST'
+        customHeaders: '{"Content-Type": "application/json"}'
+        data: '{"diff": "${{ steps.diff.outputs.diff_content }}", "prNumber": "${{ github.event.pull_request.number }}", "repo": "${{ github.repository }}"}'
