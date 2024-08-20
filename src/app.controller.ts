@@ -13,6 +13,7 @@ export class AppController {
   @Post('review')
   review(@Body() body: any): string {
     console.log({ body });
+    console.log({ body });
     console.log('review api: ', new Date());
     return 'review';
   }
