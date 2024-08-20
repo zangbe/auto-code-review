@@ -1,6 +1,7 @@
 name: Auto Code Review with Llama
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [opened, synchronize]
 
