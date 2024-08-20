@@ -22,21 +22,19 @@ jobs:
     - name: Get the diff of the PR
       id: diff
       run: |
-        DIFF_CONTENT=$(git diff ${{ github.event.pull_request.base.ref }}...HEAD)
-        # 로그에 출력
-        echo "DIFF_CONTENT: $DIFF_CONTENT"
-        echo "diff_content=$DIFF_CONTENT" >> $GITHUB_OUTPUT
-
-    # - name: Send diff text to server
-    #   run: |
-    #     curl -X POST https://52ba-220-94-146-69.ngrok-free.app/review \
-    #     -H "Content-Type: application/json" \
-    #     -d "{\"diff\": \"${{ steps.diff.outputs.diff_content }}\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo\": \"${{ github.repository }}\"}"
+        git diff ${{ github.event.pull_request.base.ref }}...HEAD > diff.txt
+        
+        # diff.txt 내용을 로그로 출력 (선택사항)
+        cat diff.txt
 
     - name: Send diff text to server
       uses: fjogeleit/http-request-action@v1
       with:
         url: 'https://52ba-220-94-146-69.ngrok-free.app/review'
         method: 'POST'
-        customHeaders: '{"Content-Type": "application/json"}'
-        data: '{"diff": "${{ steps.diff.outputs.diff_content }}", "prNumber": "${{ github.event.pull_request.number }}", "repo": "${{ github.repository }}"}'
+        contentType: multipart/form-data
+        files: |
+          file=@diff.txt
+        data: |
+          pr_number=${{ github.event.pull_request.number }}
+          repo=${{ github.repository }}
