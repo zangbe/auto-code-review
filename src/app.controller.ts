@@ -1,5 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AppService } from './app.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class AppController {
@@ -11,9 +19,10 @@ export class AppController {
   }
 
   @Post('review')
-  review(@Body() body: any): string {
+  @UseInterceptors(FileInterceptor('file'))
+  review(@UploadedFile() file: Express.Multer.File, @Body() body: any): string {
     console.log({ body });
-    console.log({ body });
+    console.log({ file });
     console.log('review api: ', new Date());
     return 'review';
   }
