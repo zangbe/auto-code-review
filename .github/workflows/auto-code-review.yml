@@ -22,10 +22,8 @@ jobs:
     - name: Get the diff of the PR
       id: diff
       run: |
-        DIFF_CONTENT=$(git diff ${{ github.event.pull_request.base.ref }}...HEAD)
-        echo "diff_content<<EOF" >> $GITHUB_OUTPUT
-        echo "$DIFF_CONTENT" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+        DIFF_CONTENT=$(git diff ${{ github.event.pull_request.base.ref }}...HEAD | jq -R -s .)
+        echo "diff_content=$DIFF_CONTENT" >> $GITHUB_OUTPUT
 
     - name: Send diff text to server
       run: |
