@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -20,6 +21,7 @@ export class AppController {
 
   @Post('review')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes(...['multipart/form-data', 'application/json'])
   review(@UploadedFile() file: Express.Multer.File, @Body() body: any): string {
     console.log({ body });
     console.log({ file });
