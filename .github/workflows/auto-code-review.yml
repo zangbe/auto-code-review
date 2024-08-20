@@ -1,0 +1,26 @@
+name: Auto Code Review with Llama
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  code_review:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get the diff of the PR
+      id: diff
+      run: |
+        git diff origin/main...HEAD > pr_diff.txt
+        DIFF_CONTENT=$(cat pr_diff.txt)
+        echo "::set-output name=diff_content::${DIFF_CONTENT}"
+
+    - name: Send diff text to server
+      run: |
+        curl -X POST https://52ba-220-94-146-69.ngrok-free.app/review \
+        -H "Content-Type: application/json" \
+        -d "{\"diff\": \"${{ steps.diff.outputs.diff_content }}\", \"pr_number\": \"${{ github.event.pull_request.number }}\", \"repo\": \"${{ github.repository }}\"}"
