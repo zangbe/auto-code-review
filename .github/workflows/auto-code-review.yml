@@ -12,13 +12,20 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 2  # 최소한 2개의 커밋을 가져옵니다. 
+
+    - name: Fetch target branch
+      run: |
+        git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
 
     - name: Get the diff of the PR
       id: diff
       run: |
-        git diff origin/main...HEAD > pr_diff.txt
-        DIFF_CONTENT=$(cat pr_diff.txt)
-        echo "diff_content=$DIFF_CONTENT" >> $GITHUB_OUTPUT
+        DIFF_CONTENT=$(git diff ${{ github.event.pull_request.base.ref }}...HEAD)
+        echo "diff_content<<EOF" >> $GITHUB_OUTPUT
+        echo "$DIFF_CONTENT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Send diff text to server
       run: |
