@@ -30,11 +30,17 @@ export class AppController {
         host: 'http://localhost:11434',
       },
     });
-    const response = await llm.chat({
+
+    const chat = await llm.chat({
       messages: [{ content: 'Tell me a joke.', role: 'user' }],
+      stream: false,
     });
-    console.log('Response 1:', response);
-    console.log('Response 1 string:', JSON.stringify(response));
+    console.log('Response 1:', chat);
+
+    const prompt = await llm.complete({
+      prompt: 'How are you?',
+    });
+    console.log('Response 2:', prompt);
 
     console.log({ body });
     console.log({ file });
