@@ -22,7 +22,7 @@ jobs:
     - name: Get the diff of the PR
       id: diff
       run: |
-        git diff ${{ github.event.pull_request.base.ref }}...HEAD > diff.txt
+        git diff ${{ github.event.pull_request.base.ref }}...HEAD -- src/ > diff.txt
         
         # diff.txt 내용을 로그로 출력 (선택사항)
         cat diff.txt
