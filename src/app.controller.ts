@@ -53,7 +53,7 @@ export class AppController {
       prompt: `
         Please review the code below.
         ==============================
-        diffContent
+        ${diffContent}
       `,
     });
     console.log({ review });
