@@ -31,16 +31,16 @@ export class AppController {
       },
     });
 
-    const chat = await llm.chat({
-      messages: [{ content: 'Tell me a joke.', role: 'user' }],
-      stream: false,
-    });
-    console.log('Response 1:', chat);
+    // const chat = await llm.chat({
+    //   messages: [{ content: 'Tell me a joke.', role: 'user' }],
+    //   stream: false,
+    // });
+    // console.log('Response 1:', chat);
 
-    const prompt = await llm.complete({
-      prompt: 'How are you?',
-    });
-    console.log('Response 2:', prompt);
+    // const prompt = await llm.complete({
+    //   prompt: 'How are you?',
+    // });
+    // console.log('Response 2:', prompt);
 
     console.log({ body });
     console.log({ file });
@@ -49,6 +49,14 @@ export class AppController {
     const diffContent = file.buffer.toString('utf-8');
     console.log('Diff Content:', diffContent);
 
+    const review = await llm.complete({
+      prompt: `
+        Please review the code below.
+        ==============================
+        diffContent
+      `,
+    });
+    console.log({ review });
     return 'review1';
   }
 }
