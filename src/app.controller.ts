@@ -26,6 +26,10 @@ export class AppController {
     console.log({ body });
     console.log({ file });
     console.log('review api: ', new Date());
+
+    const diffContent = file.buffer.toString('utf-8');
+    console.log('Diff Content:', diffContent);
+
     return 'review1';
   }
 }
