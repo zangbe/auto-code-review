@@ -51,10 +51,26 @@ export class AppController {
 
     const review = await llm.complete({
       prompt: `
-        Please review the code below.
-        ==============================
-        ${diffContent}
-      `,
+        You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request. The purpose of the review is to identify potential issues, suggest improvements, and ensure that the code follows best practices.
+
+        Please analyze the code considering the following aspects:
+        1. **Code Quality**: Is the code well-written and maintainable? Are there any anti-patterns or redundant code?
+        2. **Bugs**: Are there any potential bugs or logical errors in the code?
+        3. **Security**: Does the code handle sensitive data correctly? Are there any security vulnerabilities or risky practices?
+        4. **Performance**: Are there any parts of the code that could be optimized for better performance?
+        5. **Documentation**: Are the comments and documentation sufficient and clear? Is it easy for other developers to understand the code?
+        6. **Coding Style**: Does the code follow the project's coding standards and style guidelines?
+        
+        Here is the code diff that needs to be reviewed:
+        [${diffContent}]
+        
+        Please provide your feedback in the following format:
+        - **Issue**: [Describe the issue]
+        - **Suggestion**: [Describe the recommended change]
+        - **Example**: [Provide an example if applicable]
+        
+        Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
+        `,
     });
     console.log({ review });
     return 'review1';
