@@ -24,19 +24,19 @@ jobs:
       run: |
         git diff ${{ github.event.pull_request.base.ref }}...HEAD -- src/ > diff.txt
         
-        # # diff.txt 내용을 로그로 출력 (선택사항)
-        # cat diff.txt
+        # diff.txt 내용을 로그로 출력 (선택사항)
+        cat diff.txt
 
-        # diff.txt 파일을 gzip으로 압축
-        gzip -c diff.txt > diff.txt.gz
+        # # diff.txt 파일을 gzip으로 압축
+        # gzip -c diff.txt > diff.txt.gz
         
-        # 압축된 파일 내용 확인 (선택사항)
-        ls -lh diff.txt.gz
+        # # 압축된 파일 내용 확인 (선택사항)
+        # ls -lh diff.txt.gz
 
     - name: Send diff file to server
       run: |
         curl -X POST https://701c-220-94-146-69.ngrok-free.app/review \
         -H "Content-Type: multipart/form-data" \
-        -F "file=@diff.txt.gz" \
+        -F "file=@diff.txt" \
         -F "prNumber=${{ github.event.pull_request.number }}" \
         -F "repo=${{ github.repository }}"
