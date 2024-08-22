@@ -27,7 +27,9 @@ export class AppController {
 
   @Post('review')
   @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes(...['multipart/form-data', 'application/json'])
+  @ApiConsumes(
+    ...['multipart/form-data', 'application/json', 'application/octet-stream'],
+  )
   async review(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
     const llm = new Ollama({
       model: 'llama3',
@@ -36,23 +38,7 @@ export class AppController {
       },
     });
 
-    // const chat = await llm.chat({
-    //   messages: [{ content: 'Tell me a joke.', role: 'user' }],
-    //   stream: false,
-    // });
-    // console.log('Response 1:', chat);
-
-    // const prompt = await llm.complete({
-    //   prompt: 'How are you?',
-    // });
-    // console.log('Response 2:', prompt);
-
-    // console.log({ body });
-    // console.log({ file });
-    // console.log('review api: ', new Date());
-
     const diffContent = file.buffer.toString('utf-8');
-    // console.log('Diff Content:', diffContent);
 
     console.time('llm');
     const review = await llm.complete({
