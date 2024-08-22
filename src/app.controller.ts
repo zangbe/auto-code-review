@@ -73,19 +73,19 @@ export class AppController {
 
     const token = this.configService.get<string>('GITHUB_TOKEN') || '';
     console.log({ token, repo, prNumber });
-    // const result = await got
-    //   .post(
-    //     `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
-    //     {
-    //       headers: {
-    //         Authorization: `token ${token}`,
-    //         'Content-Type': 'application/json',
-    //       },
-    //     },
-    //   )
-    //   .json();
+    const result = await got
+      .post(
+        `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
+        {
+          headers: {
+            Authorization: `token ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .json();
 
-    // console.log({ result });
+    console.log({ result });
 
     console.log('finish');
 
