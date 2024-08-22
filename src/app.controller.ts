@@ -82,13 +82,13 @@ export class AppController {
     console.timeEnd('llm');
     console.log(review.text);
 
-    const { repo, pr_number } = body;
+    const { repo, prNumber } = body;
 
     const token = this.configService.get<string>('GITHUB_TOKEN') || '';
 
     const result = await got
       .post(
-        `https://api.github.com/repos/${repo}/issues/${pr_number}/comments`,
+        `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
         {
           headers: {
             Authorization: `token ${token}`,
