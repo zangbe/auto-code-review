@@ -72,7 +72,6 @@ export class AppController {
         - **Example**: [Provide an example if applicable]
         
         Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
-        Please provide your feedback in both Korean and English. For each issue, write the problem description, suggestions for improvement, and examples in both languages.
         `,
     });
     console.timeEnd('llm');
