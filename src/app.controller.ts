@@ -42,13 +42,14 @@ export class AppController {
     // });
     // console.log('Response 2:', prompt);
 
-    console.log({ body });
-    console.log({ file });
-    console.log('review api: ', new Date());
+    // console.log({ body });
+    // console.log({ file });
+    // console.log('review api: ', new Date());
 
     const diffContent = file.buffer.toString('utf-8');
-    console.log('Diff Content:', diffContent);
+    // console.log('Diff Content:', diffContent);
 
+    console.time('llm');
     const review = await llm.complete({
       prompt: `
         You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request.
@@ -71,10 +72,10 @@ export class AppController {
         - **Example**: [Provide an example if applicable]
         
         Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
-        Please provide your feedback in both Korean and English.
+        Please provide your feedback in both Korean and English. For each issue, write the problem description, suggestions for improvement, and examples in both languages.
         `,
     });
-
+    console.timeEnd('llm');
     console.log(review.text);
 
     return 'review1';
