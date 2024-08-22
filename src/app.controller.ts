@@ -6,7 +6,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AppService } from './app.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 import { Settings, Ollama } from 'llamaindex';
@@ -51,7 +51,8 @@ export class AppController {
 
     const review = await llm.complete({
       prompt: `
-        You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request. The purpose of the review is to identify potential issues, suggest improvements, and ensure that the code follows best practices.
+        You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request.
+        The purpose of the review is to identify potential issues, suggest improvements, and ensure that the code follows best practices.
 
         Please analyze the code considering the following aspects:
         1. **Code Quality**: Is the code well-written and maintainable? Are there any anti-patterns or redundant code?
@@ -70,9 +71,12 @@ export class AppController {
         - **Example**: [Provide an example if applicable]
         
         Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
+        Please provide your feedback in both Korean and English.
         `,
     });
-    console.log({ review });
+
+    console.log(review.text);
+
     return 'review1';
   }
 }
