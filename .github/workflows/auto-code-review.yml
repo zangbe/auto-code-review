@@ -35,7 +35,7 @@ jobs:
 
     - name: Send diff file to server
       run: |
-        curl -X POST https://secretly-fancy-starfish.ngrok-free.app/review \
+        curl -X --max-time 60 POST https://secretly-fancy-starfish.ngrok-free.app/review \
         -H "Content-Type: multipart/form-data" \
         -F "file=@diff.txt" \
         -F "prNumber=${{ github.event.pull_request.number }}" \
