@@ -69,17 +69,18 @@ export class AppController {
     console.timeEnd('llm');
     console.log(review.text);
 
-    const { repo, prNumber } = body;
+    const { repo, prNumber, owner } = body;
 
     const token = this.configService.get<string>('GITHUB_TOKEN') || '';
-    console.log({ token, repo, prNumber });
+    console.log({ token, repo, prNumber, owner });
     const result = await got
       .post(
-        `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
+        `https://api.github.com//repos/${owner}/${repo}/pulls/${prNumber}/comments`,
         {
           headers: {
-            Authorization: `token ${token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
           },
         },
       )
