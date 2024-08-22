@@ -31,6 +31,7 @@ export class AppController {
     ...['multipart/form-data', 'application/json', 'application/octet-stream'],
   )
   async review(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+    console.log('review start');
     const llm = new Ollama({
       model: 'llama3',
       config: {
@@ -71,20 +72,22 @@ export class AppController {
     const { repo, prNumber } = body;
 
     const token = this.configService.get<string>('GITHUB_TOKEN') || '';
+    console.log({ token, repo, prNumber });
+    // const result = await got
+    //   .post(
+    //     `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
+    //     {
+    //       headers: {
+    //         Authorization: `token ${token}`,
+    //         'Content-Type': 'application/json',
+    //       },
+    //     },
+    //   )
+    //   .json();
 
-    const result = await got
-      .post(
-        `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
-        {
-          headers: {
-            Authorization: `token ${token}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-      .json();
+    // console.log({ result });
 
-    console.log({ result });
+    console.log('finish');
 
     return 'review1';
   }
