@@ -27,12 +27,6 @@ jobs:
         # diff.txt 내용을 로그로 출력 (선택사항)
         cat diff.txt
 
-        # # diff.txt 파일을 gzip으로 압축
-        # gzip -c diff.txt > diff.txt.gz
-        
-        # # 압축된 파일 내용 확인 (선택사항)
-        # ls -lh diff.txt.gz
-
     - name: Send diff file to server
       run: |
         curl -X --max-time 60 POST https://secretly-fancy-starfish.ngrok-free.app/review \
