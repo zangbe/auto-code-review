@@ -10,10 +10,15 @@ import { AppService } from './app.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 import { Settings, Ollama } from 'llamaindex';
+import { ConfigService } from '@nestjs/config';
+import got from 'got';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -76,6 +81,24 @@ export class AppController {
     });
     console.timeEnd('llm');
     console.log(review.text);
+
+    const { repo, pr_number } = body;
+
+    const token = this.configService.get<string>('GITHUB_TOKEN') || '';
+
+    const result = await got
+      .post(
+        `https://api.github.com/repos/${repo}/issues/${pr_number}/comments`,
+        {
+          headers: {
+            Authorization: `token ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .json();
+
+    console.log({ result });
 
     return 'review1';
   }
