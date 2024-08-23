@@ -28,6 +28,7 @@
     "@nestjs/swagger": "^7.4.0",
     "got": "^14.4.2",
     "llamaindex": "^0.5.19",
+    "octokit": "^4.0.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
