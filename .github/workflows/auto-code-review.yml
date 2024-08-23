@@ -10,28 +10,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 2  # 최소한 2개의 커밋을 가져옵니다. 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Fetch target branch
-      run: |
-        git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
+      # - name: Install dependencies
+      #   run: npm install
 
-    - name: Get the diff of the PR
-      id: diff
-      run: |
-        git diff ${{ github.event.pull_request.base.ref }}...HEAD -- src/ > diff.txt
+      - name: Build
+        run: npm run build
+  
+      - name: Run review
+        run: |
+          node ./dist/src/review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+    # - name: Checkout code
+    #   uses: actions/checkout@v4
+    #   with:
+    #     fetch-depth: 2  # 최소한 2개의 커밋을 가져옵니다. 
+
+    # - name: Fetch target branch
+    #   run: |
+    #     git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
+
+    # - name: Get the diff of the PR
+    #   id: diff
+    #   run: |
+    #     git diff ${{ github.event.pull_request.base.ref }}...HEAD -- src/ > diff.txt
         
-        # diff.txt 내용을 로그로 출력 (선택사항)
-        cat diff.txt
+    #     # diff.txt 내용을 로그로 출력 (선택사항)
+    #     cat diff.txt
 
-    - name: Send diff file to server
-      run: |
-        curl -X POST https://secretly-fancy-starfish.ngrok-free.app/review \
-        -H "Content-Type: multipart/form-data" \
-        -F "file=@diff.txt" \ 
-        -F "prNumber=${{ github.event.pull_request.number }}" \
-        -F "owner=${{ github.repository_owner }}" \
-        -F "repo=${{ github.repository }}"
+    # - name: Send diff file to server
+    #   run: |
+    #     curl -X POST https://secretly-fancy-starfish.ngrok-free.app/review \
+    #     -H "Content-Type: multipart/form-data" \
+    #     -F "file=@diff.txt" \ 
+    #     -F "prNumber=${{ github.event.pull_request.number }}" \
+    #     -F "owner=${{ github.repository_owner }}" \
+    #     -F "repo=${{ github.repository }}"
