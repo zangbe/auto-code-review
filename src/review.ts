@@ -20,9 +20,13 @@ dto.githubToken = githubToken;
 dto.pullRequestNumber = Number(prNumber);
 dto.repository = repo;
 
+got.get('https://secretly-fancy-starfish.ngrok-free.app/');
+
 got.post('https://secretly-fancy-starfish.ngrok-free.app/review', {
   json: { dto },
 });
+
+console.log('review script finish');
 
 // const octokit = new Octokit({
 //   auth: '',
