@@ -1,17 +1,28 @@
+import { GitDto } from './git.dto';
+import { got } from 'got';
 // Octokit.js
 
 // import { Octokit } from 'octokit';
 console.log('start review');
 
-const githubToken = process.env.GITHUB_TOKEN;
+const githubToken = process.env.GITHUB_TOKEN || '';
 const prNumber = process.env.PR_NUMBER;
-const repo = process.env.REPO;
+const repo = process.env.REPO || '';
 const owner = process.env.OWNER;
 
 console.log(`GITHUB_TOKEN: ${githubToken}`);
 console.log(`PR_NUMBER: ${prNumber}`);
 console.log(`REPO: ${repo}`);
 console.log(`OWNER: ${owner}`);
+
+const dto = new GitDto();
+dto.githubToken = githubToken;
+dto.pullRequestNumber = Number(prNumber);
+dto.repository = repo;
+
+got.post('https://secretly-fancy-starfish.ngrok-free.app/review', {
+  json: { dto },
+});
 
 // const octokit = new Octokit({
 //   auth: '',
