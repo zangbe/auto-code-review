@@ -52,6 +52,20 @@ export class AppController {
 
     console.log({ result });
 
+    const files = await octokit.request(
+      `GET /repos/${owner}/${repository}/pulls/${dto.pullRequestNumber}/files`,
+      {
+        owner,
+        repo: repository,
+        pull_number: dto.pullRequestNumber,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      },
+    );
+
+    console.log({ files });
+
     // const llm = new Ollama({
     //   model: 'llama3',
     //   config: {
