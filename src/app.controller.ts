@@ -66,6 +66,8 @@ export class AppController {
 
     console.log({ files });
 
+    console.log({ filesData: files.data });
+
     // const llm = new Ollama({
     //   model: 'llama3',
     //   config: {
