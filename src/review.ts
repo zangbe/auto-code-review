@@ -1,4 +1,4 @@
-import { GitDto } from './git.dto';
+import { GitDto } from './git.dto.js';
 import { got } from 'got';
 // Octokit.js
 
