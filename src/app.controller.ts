@@ -13,6 +13,7 @@ import { Settings, Ollama } from 'llamaindex';
 import { ConfigService } from '@nestjs/config';
 import got from 'got';
 import { GitDto } from './git.dto.js';
+import { Octokit } from 'octokit';
 
 @Controller()
 export class AppController {
@@ -32,6 +33,25 @@ export class AppController {
   async review(@Body() dto: GitDto) {
     console.log('review call');
     console.log({ dto });
+
+    const [owner, repository] = dto.repository.split('/');
+    const url = `/repos/${owner}/${repository}/pulls/${dto.pullRequestNumber}`;
+
+    const octokit = new Octokit({
+      auth: dto.githubToken,
+    });
+
+    const result = await octokit.request(`GET ${url}`, {
+      owner,
+      repo: repository,
+      pull_number: dto.pullRequestNumber,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    console.log({ result });
+
     // const llm = new Ollama({
     //   model: 'llama3',
     //   config: {
