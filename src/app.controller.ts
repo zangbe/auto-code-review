@@ -70,8 +70,14 @@ export class AppController {
 
     const filteredFiles = files.data
       .filter((file) => file.filename.includes('src/'))
-      .map((file) => file.patch);
+      .map((file) => {
+        return {
+          fileName: file.filename,
+          diff: file.patch,
+        };
+      });
     console.log({ filteredFiles });
+    console.log({ filteredFilesCount: filteredFiles.length });
 
     // const llm = new Ollama({
     //   model: 'llama3',
