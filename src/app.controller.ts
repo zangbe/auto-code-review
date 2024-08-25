@@ -93,6 +93,9 @@ export class AppController {
       repo: dto.repository,
       issue_number: dto.pullRequestNumber,
       body: 'comment test!!!',
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
     });
 
     // const llm = new Ollama({
