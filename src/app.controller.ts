@@ -85,11 +85,11 @@ export class AppController {
           diff: file.patch,
         };
       });
-    console.log({ filteredFiles });
+    // console.log({ filteredFiles });
     console.log({ filteredFilesCount: filteredFiles.length });
 
     try {
-      await octokit.rest.issues.createComment({
+      const comment = await octokit.rest.issues.createComment({
         owner,
         repo: repository,
         issue_number: dto.pullRequestNumber,
@@ -98,6 +98,7 @@ export class AppController {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });
+      console.log({ comment });
     } catch (error: unknown) {
       console.error(error);
     }
