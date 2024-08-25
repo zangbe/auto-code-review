@@ -102,22 +102,22 @@ export class AppController {
       console.error(error);
     }
 
-    try {
-      await octokit.request(
-        `POST /repos/${owner}/${repository}/issues/${dto.pullRequestNumber}/comments`,
-        {
-          owner,
-          repo: repository,
-          pull_number: dto.pullRequestNumber,
-          body: 'comment test rest api',
-          headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-          },
-        },
-      );
-    } catch (error: unknown) {
-      console.error(error);
-    }
+    // try {
+    //   await octokit.request(
+    //     `POST /repos/${owner}/${repository}/issues/${dto.pullRequestNumber}/comments`,
+    //     {
+    //       owner,
+    //       repo: repository,
+    //       pull_number: dto.pullRequestNumber,
+    //       body: 'comment test rest api',
+    //       headers: {
+    //         'X-GitHub-Api-Version': '2022-11-28',
+    //       },
+    //     },
+    //   );
+    // } catch (error: unknown) {
+    //   console.error(error);
+    // }
 
     // const llm = new Ollama({
     //   model: 'llama3',
