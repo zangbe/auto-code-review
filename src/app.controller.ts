@@ -88,6 +88,16 @@ export class AppController {
     console.log({ filteredFiles });
     console.log({ filteredFilesCount: filteredFiles.length });
 
+    await octokit.rest.pulls.createReview({
+      owner,
+      repo: repository,
+      pull_number: dto.pullRequestNumber,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+      body: 'comment test!',
+    });
+
     // const llm = new Ollama({
     //   model: 'llama3',
     //   config: {
