@@ -93,7 +93,45 @@ export class AppController {
         owner,
         repo: repository,
         issue_number: dto.pullRequestNumber,
-        body: 'comment test createComment',
+        body: `
+          <h2>📝 Code Review Summary</h2>
+
+          <h3>✅ Passed</h3>
+          <ul>
+            <li>All unit tests passed.</li>
+            <li>No major security issues found.</li>
+          </ul>
+          
+          <h3>⚠️ Issues Found</h3>
+          <ul>
+            <li><strong>Function 'calculateTotal':</strong> The performance can be improved by avoiding unnecessary loops.</li>
+            <li><strong>Variable 'userList':</strong> The naming convention does not follow the project guidelines.</li>
+          </ul>
+          
+          <h3>📈 Recommendations</h3>
+          <p>Refactor the <code>calculateTotal</code> function to reduce the time complexity.<br>
+          Rename <code>userList</code> to <code>activeUsers</code> to better reflect its purpose.</p>
+          
+          <hr>
+          
+          <p><strong>Overall:</strong> Great work! Please address the mentioned issues before merging. 👍</p>
+
+
+          ## 📝 Code Review Summary
+
+          ### ✅ Passed
+          passed
+
+          ### ⚠️ Issues Found
+          Issues Found
+
+          ### 📈 Recommendations
+          Recommendations
+
+          ---
+
+          **Overall:** overall!
+        `,
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
