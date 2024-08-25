@@ -42,7 +42,7 @@ jobs:
         run: |
           node ./dist/src/review
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.NEW_GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
