@@ -88,28 +88,36 @@ export class AppController {
     console.log({ filteredFiles });
     console.log({ filteredFilesCount: filteredFiles.length });
 
-    await octokit.rest.issues.createComment({
-      owner,
-      repo: repository,
-      issue_number: dto.pullRequestNumber,
-      body: 'comment test createComment',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
-
-    await octokit.request(
-      `POST /repos/${owner}/${dto.repository}/issues/${dto.pullRequestNumber}/comments`,
-      {
+    try {
+      await octokit.rest.issues.createComment({
         owner,
-        repo: dto.repository,
-        pull_number: dto.pullRequestNumber,
-        body: 'comment test rest api',
+        repo: repository,
+        issue_number: dto.pullRequestNumber,
+        body: 'comment test createComment',
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
-      },
-    );
+      });
+    } catch (error: unknown) {
+      console.error(error);
+    }
+
+    try {
+      await octokit.request(
+        `POST /repos/${owner}/${repository}/issues/${dto.pullRequestNumber}/comments`,
+        {
+          owner,
+          repo: repository,
+          pull_number: dto.pullRequestNumber,
+          body: 'comment test rest api',
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        },
+      );
+    } catch (error: unknown) {
+      console.error(error);
+    }
 
     // const llm = new Ollama({
     //   model: 'llama3',
