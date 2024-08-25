@@ -89,7 +89,32 @@ export class AppController {
     console.log({ filteredFilesCount: filteredFiles.length });
 
     try {
-      const comment = await octokit.rest.issues.createComment({
+      await octokit.rest.issues.createComment({
+        owner,
+        repo: repository,
+        issue_number: dto.pullRequestNumber,
+        body: `
+          ## 📝 Code Review Summary
+
+          ### ✅ Passed
+          passed
+
+          ### ⚠️ Issues Found
+          Issues Found
+
+          ### 📈 Recommendations
+          Recommendations
+
+          ---
+
+          **Overall:** overall!
+        `,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      });
+
+      await octokit.rest.issues.createComment({
         owner,
         repo: repository,
         issue_number: dto.pullRequestNumber,
@@ -115,28 +140,13 @@ export class AppController {
           <hr>
           
           <p><strong>Overall:</strong> Great work! Please address the mentioned issues before merging. 👍</p>
-
-
-          ## 📝 Code Review Summary
-
-          ### ✅ Passed
-          passed
-
-          ### ⚠️ Issues Found
-          Issues Found
-
-          ### 📈 Recommendations
-          Recommendations
-
-          ---
-
-          **Overall:** overall!
         `,
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });
-      console.log({ comment });
+
+      console.log('commented');
     } catch (error: unknown) {
       console.error(error);
     }
