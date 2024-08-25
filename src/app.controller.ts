@@ -50,7 +50,7 @@ export class AppController {
       },
     });
 
-    console.log({ result });
+    // console.log({ result });
 
     const files = await octokit.request(
       `GET /repos/${owner}/${repository}/pulls/${dto.pullRequestNumber}/files`,
@@ -64,9 +64,14 @@ export class AppController {
       },
     );
 
-    console.log({ files });
+    // console.log({ files });
 
-    console.log({ filesData: files.data });
+    // console.log({ filesData: files.data });
+
+    const filteredFiles = files.data
+      .filter((file) => file.filename.includes('src/'))
+      .map((file) => file.patch);
+    console.log({ filteredFiles });
 
     // const llm = new Ollama({
     //   model: 'llama3',
