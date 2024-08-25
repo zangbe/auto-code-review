@@ -89,58 +89,31 @@ export class AppController {
     console.log({ filteredFilesCount: filteredFiles.length });
 
     try {
-      await octokit.rest.issues.createComment({
-        owner,
-        repo: repository,
-        issue_number: dto.pullRequestNumber,
-        body: `
-          ## 📝 Code Review Summary
+      const formattedComment = `
+## 📝 Code Review Summary
 
-          ### ✅ Passed
-          passed
+### ✅ Passed
+- All unit tests passed.
+- No major security issues found.
 
-          ### ⚠️ Issues Found
-          Issues Found
+### ⚠️ Issues Found
+- **Function \`calculateTotal\`:** The performance can be improved by avoiding unnecessary loops.
+- **Variable \`userList\`:** The naming convention does not follow the project guidelines.
 
-          ### 📈 Recommendations
-          Recommendations
+### 📈 Recommendations
+- Refactor the \`calculateTotal\` function to reduce the time complexity.
+- Rename \`userList\` to \`activeUsers\` to better reflect its purpose.
 
-          ---
+---
 
-          **Overall:** overall!
-        `,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      });
+**Overall:** Great work! Please address the mentioned issues before merging. 👍
+`;
 
       await octokit.rest.issues.createComment({
         owner,
         repo: repository,
         issue_number: dto.pullRequestNumber,
-        body: `
-          <h2>📝 Code Review Summary</h2>
-
-          <h3>✅ Passed</h3>
-          <ul>
-            <li>All unit tests passed.</li>
-            <li>No major security issues found.</li>
-          </ul>
-          
-          <h3>⚠️ Issues Found</h3>
-          <ul>
-            <li><strong>Function 'calculateTotal':</strong> The performance can be improved by avoiding unnecessary loops.</li>
-            <li><strong>Variable 'userList':</strong> The naming convention does not follow the project guidelines.</li>
-          </ul>
-          
-          <h3>📈 Recommendations</h3>
-          <p>Refactor the <code>calculateTotal</code> function to reduce the time complexity.<br>
-          Rename <code>userList</code> to <code>activeUsers</code> to better reflect its purpose.</p>
-          
-          <hr>
-          
-          <p><strong>Overall:</strong> Great work! Please address the mentioned issues before merging. 👍</p>
-        `,
+        body: formattedComment,
         headers: {
           'X-GitHub-Api-Version': '2022-11-28',
         },
