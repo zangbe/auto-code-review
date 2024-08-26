@@ -198,5 +198,17 @@ Please format your review using the structure above and include file names, line
     });
     console.timeEnd('llm');
     console.log(review.text);
+
+    await octokit.rest.issues.createComment({
+      owner,
+      repo: repository,
+      issue_number: dto.pullRequestNumber,
+      body: review.text,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    console.log('commented');
   }
 }
