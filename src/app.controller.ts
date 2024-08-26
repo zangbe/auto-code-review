@@ -63,6 +63,8 @@ export class AppController {
 
     const filteredFiles = files.data
       .filter((file) => file.filename.includes('src/'))
+      .filter((file) => !file.filename.includes('module'))
+      .filter((file) => !file.filename.includes('spec'))
       .map((file) => {
         return {
           fileName: file.filename,
@@ -96,7 +98,7 @@ Please format your review results according to the structure provided below:
 **Project Conventions**:
 Please refer to the following project conventions when conducting your review:
 
-[Please refer to the project conventions here: https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript]
+[Please refer to the project conventions here: https://google.github.io/styleguide/jsguide.html]
 
 ### 📝 **Code Review Summary**
 Provide a brief summary of the overall quality of the code, focusing on the main areas reviewed.
