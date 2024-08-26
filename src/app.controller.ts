@@ -88,117 +88,73 @@ export class AppController {
     // console.log({ filteredFiles });
     console.log({ filteredFilesCount: filteredFiles.length });
 
-    try {
-      const formattedComment = `
-## 📝 Code Review Summary
+    const formattedComment = `
+        ## 📝 Code Review Summary
+        
+        ### ✅ Passed
+        - All unit tests passed.
+        - No major security issues found.
+        
+        ### ⚠️ Issues Found
+        - **Function \`calculateTotal\`:** The performance can be improved by avoiding unnecessary loops.
+        - **Variable \`userList\`:** The naming convention does not follow the project guidelines.
+        
+        ### 📈 Recommendations
+        - Refactor the \`calculateTotal\` function to reduce the time complexity.
+        - Rename \`userList\` to \`activeUsers\` to better reflect its purpose.
+        
+        ---
+        
+        **Overall:** Great work! Please address the mentioned issues before merging. 👍
+    `;
 
-### ✅ Passed
-- All unit tests passed.
-- No major security issues found.
+    await octokit.rest.issues.createComment({
+      owner,
+      repo: repository,
+      issue_number: dto.pullRequestNumber,
+      body: formattedComment,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
 
-### ⚠️ Issues Found
-- **Function \`calculateTotal\`:** The performance can be improved by avoiding unnecessary loops.
-- **Variable \`userList\`:** The naming convention does not follow the project guidelines.
+    console.log('commented');
 
-### 📈 Recommendations
-- Refactor the \`calculateTotal\` function to reduce the time complexity.
-- Rename \`userList\` to \`activeUsers\` to better reflect its purpose.
+    const llm = new Ollama({
+      model: 'llama3',
+      config: {
+        host: 'http://localhost:11434',
+      },
+    });
 
----
+    const diffContent = filteredFiles;
 
-**Overall:** Great work! Please address the mentioned issues before merging. 👍
-`;
+    console.time('llm');
+    const review = await llm.complete({
+      prompt: `
+        You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request.
+        The purpose of the review is to identify potential issues, suggest improvements, and ensure that the code follows best practices.
 
-      await octokit.rest.issues.createComment({
-        owner,
-        repo: repository,
-        issue_number: dto.pullRequestNumber,
-        body: formattedComment,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      });
+        Please analyze the code considering the following aspects:
+        1. **Code Quality**: Is the code well-written and maintainable? Are there any anti-patterns or redundant code?
+        2. **Bugs**: Are there any potential bugs or logical errors in the code?
+        3. **Security**: Does the code handle sensitive data correctly? Are there any security vulnerabilities or risky practices?
+        4. **Performance**: Are there any parts of the code that could be optimized for better performance?
+        5. **Documentation**: Are the comments and documentation sufficient and clear? Is it easy for other developers to understand the code?
+        6. **Coding Style**: Does the code follow the project's coding standards and style guidelines?
 
-      console.log('commented');
-    } catch (error: unknown) {
-      console.error(error);
-    }
+        Here is the code diff that needs to be reviewed:
+        [${diffContent}]
 
-    // try {
-    //   await octokit.request(
-    //     `POST /repos/${owner}/${repository}/issues/${dto.pullRequestNumber}/comments`,
-    //     {
-    //       owner,
-    //       repo: repository,
-    //       pull_number: dto.pullRequestNumber,
-    //       body: 'comment test rest api',
-    //       headers: {
-    //         'X-GitHub-Api-Version': '2022-11-28',
-    //       },
-    //     },
-    //   );
-    // } catch (error: unknown) {
-    //   console.error(error);
-    // }
+        Please provide your feedback in the following format:
+        - **Issue**: [Describe the issue]
+        - **Suggestion**: [Describe the recommended change]
+        - **Example**: [Provide an example if applicable]
 
-    // const llm = new Ollama({
-    //   model: 'llama3',
-    //   config: {
-    //     host: 'http://localhost:11434',
-    //   },
-    // });
-
-    // const diffContent = file.buffer.toString('utf-8');
-
-    // console.time('llm');
-    // const review = await llm.complete({
-    //   prompt: `
-    //     You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request.
-    //     The purpose of the review is to identify potential issues, suggest improvements, and ensure that the code follows best practices.
-
-    //     Please analyze the code considering the following aspects:
-    //     1. **Code Quality**: Is the code well-written and maintainable? Are there any anti-patterns or redundant code?
-    //     2. **Bugs**: Are there any potential bugs or logical errors in the code?
-    //     3. **Security**: Does the code handle sensitive data correctly? Are there any security vulnerabilities or risky practices?
-    //     4. **Performance**: Are there any parts of the code that could be optimized for better performance?
-    //     5. **Documentation**: Are the comments and documentation sufficient and clear? Is it easy for other developers to understand the code?
-    //     6. **Coding Style**: Does the code follow the project's coding standards and style guidelines?
-
-    //     Here is the code diff that needs to be reviewed:
-    //     [${diffContent}]
-
-    //     Please provide your feedback in the following format:
-    //     - **Issue**: [Describe the issue]
-    //     - **Suggestion**: [Describe the recommended change]
-    //     - **Example**: [Provide an example if applicable]
-
-    //     Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
-    //     `,
-    // });
-    // console.timeEnd('llm');
-    // console.log(review.text);
-
-    // const { repo, prNumber, owner } = body;
-
-    // const token = this.configService.get<string>('GITHUB_TOKEN') || '';
-    // console.log({ token, repo, prNumber, owner });
-    // const result = await got
-    //   .post(
-    //     `https://api.github.com//repos/${owner}/${repo}/pulls/${prNumber}/comments`,
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         'Content-Type': 'application/vnd.github+json',
-    //         'X-GitHub-Api-Version': '2022-11-28',
-    //       },
-    //     },
-    //   )
-    //   .json();
-
-    // console.log({ result });
-
-    // console.log('finish');
-
-    // return 'review1';
+        Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
+        `,
+    });
+    console.timeEnd('llm');
+    console.log(review.text);
   }
 }
