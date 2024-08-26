@@ -88,38 +88,39 @@ export class AppController {
     // console.log({ filteredFiles });
     console.log({ filteredFilesCount: filteredFiles.length });
 
-    const formattedComment = `
-        ## 📝 Code Review Summary
-        
-        ### ✅ Passed
-        - All unit tests passed.
-        - No major security issues found.
-        
-        ### ⚠️ Issues Found
-        - **Function \`calculateTotal\`:** The performance can be improved by avoiding unnecessary loops.
-        - **Variable \`userList\`:** The naming convention does not follow the project guidelines.
-        
-        ### 📈 Recommendations
-        - Refactor the \`calculateTotal\` function to reduce the time complexity.
-        - Rename \`userList\` to \`activeUsers\` to better reflect its purpose.
-        
-        ---
-        
-        **Overall:** Great work! Please address the mentioned issues before merging. 👍
-    `;
+    // const formattedComment = `
+    //     ## 📝 Code Review Summary
 
-    await octokit.rest.issues.createComment({
-      owner,
-      repo: repository,
-      issue_number: dto.pullRequestNumber,
-      body: formattedComment,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    });
+    //     ### ✅ Passed
+    //     - All unit tests passed.
+    //     - No major security issues found.
 
-    console.log('commented');
+    //     ### ⚠️ Issues Found
+    //     - **Function \`calculateTotal\`:** The performance can be improved by avoiding unnecessary loops.
+    //     - **Variable \`userList\`:** The naming convention does not follow the project guidelines.
 
+    //     ### 📈 Recommendations
+    //     - Refactor the \`calculateTotal\` function to reduce the time complexity.
+    //     - Rename \`userList\` to \`activeUsers\` to better reflect its purpose.
+
+    //     ---
+
+    //     **Overall:** Great work! Please address the mentioned issues before merging. 👍
+    // `;
+
+    // await octokit.rest.issues.createComment({
+    //   owner,
+    //   repo: repository,
+    //   issue_number: dto.pullRequestNumber,
+    //   body: formattedComment,
+    //   headers: {
+    //     'X-GitHub-Api-Version': '2022-11-28',
+    //   },
+    // });
+
+    // console.log('commented');
+
+    console.log('start llm');
     const llm = new Ollama({
       model: 'llama3',
       config: {
@@ -129,30 +130,71 @@ export class AppController {
 
     const diffContent = filteredFiles;
 
+    const formattedComment = `
+You are a code review assistant with expertise in following specific project conventions. The project you are reviewing has a defined set of conventions that must be adhered to. Please review the following code changes and ensure that they comply with these conventions.
+
+**Project Conventions**:
+Please refer to the following project conventions when conducting your review:
+
+[https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript]
+
+**Code Review Focus**:
+1. **Adherence to Conventions**: Ensure the code strictly follows the provided project conventions.
+2. **Code Quality**: Is the code well-structured, readable, and maintainable? Identify any code smells or anti-patterns.
+3. **Bugs and Logical Errors**: Can you spot any potential bugs, logical errors, or edge cases that might have been missed?
+4. **Security**: Assess the code for potential security vulnerabilities. Does it handle sensitive data correctly and follow security best practices?
+5. **Performance**: Identify any potential performance issues or opportunities for optimization.
+
+Please provide the review results in a well-formatted Markdown report, including the following sections:
+
+### 📝 **Code Review Summary**
+Provide a brief overview of the code quality and adherence to the project's conventions.
+
+### ✅ **Passed**
+- List the aspects of the code that meet the standards and follow best practices.
+- Example: \`- The function names follow the convention of starting with a verb.\`
+
+### ⚠️ **Issues Found**
+- List any issues or areas where the code does not adhere to the project conventions or best practices.
+- For each issue, provide:
+  - **File Name**: The name of the file where the issue was found.
+  - **Line Number**: The specific line number or range of lines where the issue occurs.
+  - **Description**: A brief description of the issue.
+  - **Problematic Code**: Show the code that has the issue.
+  - **Suggested Improvement**: Provide a code example that shows how to fix the issue.
+  
+- Example:
+  - **File Name**: \`src/utils/helpers.js\`
+  - **Line Number**: 23
+  - **Issue**: Variable name is not descriptive enough.
+  - **Problematic Code**:
+    \`\`\`javascript
+    const a = 19; // ❌ Incorrect
+    \`\`\`
+  - **Suggested Improvement**:
+    \`\`\`javascript
+    const age = 19; // ✅ Correct
+    \`\`\`
+
+### 📈 **Recommendations**
+- Suggest improvements or refactoring opportunities to enhance the code quality, performance, or security.
+- Example: \`- Consider refactoring the \`calculateTotal\` function to reduce time complexity.\`
+
+### 💡 **Overall Assessment**
+Provide a concluding statement summarizing the overall quality of the code and whether it is ready to be merged, with any final recommendations.
+
+Here's the code diff:
+
+\`\`\`diff
+[${diffContent}]
+\`\`\`
+
+Please format your review using the structure above and include file names, line numbers, and code examples where necessary to illustrate your points.
+`;
+
     console.time('llm');
     const review = await llm.complete({
-      prompt: `
-        You are a code review assistant. Your task is to review the following code changes made in a GitHub Pull Request.
-        The purpose of the review is to identify potential issues, suggest improvements, and ensure that the code follows best practices.
-
-        Please analyze the code considering the following aspects:
-        1. **Code Quality**: Is the code well-written and maintainable? Are there any anti-patterns or redundant code?
-        2. **Bugs**: Are there any potential bugs or logical errors in the code?
-        3. **Security**: Does the code handle sensitive data correctly? Are there any security vulnerabilities or risky practices?
-        4. **Performance**: Are there any parts of the code that could be optimized for better performance?
-        5. **Documentation**: Are the comments and documentation sufficient and clear? Is it easy for other developers to understand the code?
-        6. **Coding Style**: Does the code follow the project's coding standards and style guidelines?
-
-        Here is the code diff that needs to be reviewed:
-        [${diffContent}]
-
-        Please provide your feedback in the following format:
-        - **Issue**: [Describe the issue]
-        - **Suggestion**: [Describe the recommended change]
-        - **Example**: [Provide an example if applicable]
-
-        Make sure to explain your reasoning for each suggestion, and if the code appears to be well-written and without issues, acknowledge that as well.
-        `,
+      prompt: formattedComment,
     });
     console.timeEnd('llm');
     console.log(review.text);
