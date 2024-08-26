@@ -131,65 +131,124 @@ export class AppController {
     const diffContent = filteredFiles;
 
     const formattedComment = `
-You are a code review assistant with expertise in following specific project conventions. The project you are reviewing has a defined set of conventions that must be adhered to. Please review the following code changes and ensure that they comply with these conventions.
+    You are a code review assistant with expertise in following specific project conventions. The project you are reviewing has a defined set of conventions that must be adhered to. Please review the following code changes and ensure that they comply with these conventions.
+    
+    **Project Conventions**:
+    Please refer to the following project conventions when conducting your review:
+    
+    [Please refer to the project conventions here: https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript]
+    
+    **Code Review Focus**:
+    1. **Adherence to Conventions**: Ensure the code strictly follows the provided project conventions.
+    2. **Code Quality**: Is the code well-structured, readable, and maintainable? Identify any code smells or anti-patterns.
+    3. **Bugs and Logical Errors**: Can you spot any potential bugs, logical errors, or edge cases that might have been missed?
+    4. **Security**: Assess the code for potential security vulnerabilities. Does it handle sensitive data correctly and follow security best practices?
+    5. **Performance**: Identify any potential performance issues or opportunities for optimization.
+    
+    Please provide the review results in a well-formatted Markdown report, following the same structure as the Code Review Focus sections:
+    
+    ### 📝 **Code Review Summary**
+    Provide a brief overview of the code quality and adherence to the project's conventions.
+    
+    ### 1. **Adherence to Conventions**
+    - Evaluate how well the code adheres to the specified project conventions.
+    - Example:
+      - **File Name**: \`src/utils/helpers.js\`
+      - **Line Number**: 23
+      - **Issue**: Variable name does not follow the convention.
+      - **Problematic Code**:
+        \`\`\`javascript
+        const a = 19; // ❌ Incorrect
+        \`\`\`
+      - **Suggested Improvement**:
+        \`\`\`javascript
+        const age = 19; // ✅ Correct
+        \`\`\`
+    
+    ### 2. **Code Quality**
+    - Assess the structure, readability, and maintainability of the code.
+    - Identify any code smells or anti-patterns.
+    - Example:
+      - **File Name**: \`src/components/Calculator.js\`
+      - **Line Number**: 45-47
+      - **Issue**: Complex logic within a single function reduces readability.
+      - **Problematic Code**:
+        \`\`\`javascript
+        function calculateTotal(items) {
+            let total = 0;
+            for (let i = 0; i < items.length; i++) {
+                total += items[i];
+            }
+            return total;
+        } // ❌ Inefficient and complex
+        \`\`\`
+      - **Suggested Improvement**:
+        \`\`\`javascript
+        function calculateTotal(items) {
+            return items.reduce((total, item) => total + item, 0);
+        } // ✅ Simplified and more efficient
+        \`\`\`
+    
+    ### 3. **Bugs and Logical Errors**
+    - Identify any potential bugs or logical errors within the code.
+    - Example:
+      - **File Name**: \`src/services/UserService.js\`
+      - **Line Number**: 12
+      - **Issue**: Possible null reference error when accessing user data.
+      - **Problematic Code**:
+        \`\`\`javascript
+        const userName = user.name.toUpperCase(); // ❌ Potential null reference error
+        \`\`\`
+      - **Suggested Improvement**:
+        \`\`\`javascript
+        const userName = user?.name?.toUpperCase() ?? 'Unknown'; // ✅ Safe access and default value
+        \`\`\`
+    
+    ### 4. **Security**
+    - Review the code for any security vulnerabilities.
+    - Ensure that sensitive data is handled correctly and that security best practices are followed.
+    - Example:
+      - **File Name**: \`src/controllers/AuthController.js\`
+      - **Line Number**: 34
+      - **Issue**: Password is stored in plaintext in the database.
+      - **Problematic Code**:
+        \`\`\`javascript
+        saveUser({ username, password }); // ❌ Storing password in plaintext
+        \`\`\`
+      - **Suggested Improvement**:
+        \`\`\`javascript
+        const hashedPassword = hashPassword(password);
+        saveUser({ username, password: hashedPassword }); // ✅ Password is hashed before storing
+        \`\`\`
+    
+    ### 5. **Performance**
+    - Identify any areas where the code could be optimized for better performance.
+    - Example:
+      - **File Name**: \`src/utils/ArrayUtils.js\`
+      - **Line Number**: 8-12
+      - **Issue**: Unnecessary iteration over the array.
+      - **Problematic Code**:
+        \`\`\`javascript
+        let result = [];
+        for (let i = 0; i < arr.length; i++) {
+            result.push(arr[i] * 2);
+        } // ❌ Inefficient looping
+        \`\`\`
+      - **Suggested Improvement**:
+        \`\`\`javascript
+        const result = arr.map(item => item * 2); // ✅ More efficient using map()
+        \`\`\`
+    
+    ### 💡 **Overall Assessment**
+    Provide a concluding statement summarizing the overall quality of the code and whether it is ready to be merged, with any final recommendations.    
 
-**Project Conventions**:
-Please refer to the following project conventions when conducting your review:
+    Here's the code diff:
 
-[https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide/Code_style_guide/JavaScript]
-
-**Code Review Focus**:
-1. **Adherence to Conventions**: Ensure the code strictly follows the provided project conventions.
-2. **Code Quality**: Is the code well-structured, readable, and maintainable? Identify any code smells or anti-patterns.
-3. **Bugs and Logical Errors**: Can you spot any potential bugs, logical errors, or edge cases that might have been missed?
-4. **Security**: Assess the code for potential security vulnerabilities. Does it handle sensitive data correctly and follow security best practices?
-5. **Performance**: Identify any potential performance issues or opportunities for optimization.
-
-Please provide the review results in a well-formatted Markdown report, including the following sections:
-
-### 📝 **Code Review Summary**
-Provide a brief overview of the code quality and adherence to the project's conventions.
-
-### ✅ **Passed**
-- List the aspects of the code that meet the standards and follow best practices.
-- Example: \`- The function names follow the convention of starting with a verb.\`
-
-### ⚠️ **Issues Found**
-- List any issues or areas where the code does not adhere to the project conventions or best practices.
-- For each issue, provide:
-  - **File Name**: The name of the file where the issue was found.
-  - **Line Number**: The specific line number or range of lines where the issue occurs.
-  - **Description**: A brief description of the issue.
-  - **Problematic Code**: Show the code that has the issue.
-  - **Suggested Improvement**: Provide a code example that shows how to fix the issue.
-  
-- Example:
-  - **File Name**: \`src/utils/helpers.js\`
-  - **Line Number**: 23
-  - **Issue**: Variable name is not descriptive enough.
-  - **Problematic Code**:
-    \`\`\`javascript
-    const a = 19; // ❌ Incorrect
+    \`\`\`diff
+    [${JSON.stringify(diffContent)}]
     \`\`\`
-  - **Suggested Improvement**:
-    \`\`\`javascript
-    const age = 19; // ✅ Correct
-    \`\`\`
 
-### 📈 **Recommendations**
-- Suggest improvements or refactoring opportunities to enhance the code quality, performance, or security.
-- Example: \`- Consider refactoring the \`calculateTotal\` function to reduce time complexity.\`
-
-### 💡 **Overall Assessment**
-Provide a concluding statement summarizing the overall quality of the code and whether it is ready to be merged, with any final recommendations.
-
-Here's the code diff:
-
-\`\`\`diff
-[${diffContent}]
-\`\`\`
-
-Please format your review using the structure above and include file names, line numbers, and code examples where necessary to illustrate your points.
+    Please format your review using the structure above and include file names, line numbers, and code examples where necessary to illustrate your points.
 `;
 
     console.time('llm');
