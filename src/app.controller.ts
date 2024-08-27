@@ -83,7 +83,10 @@ export class AppController {
     const diffContent = filteredFiles;
 
     const formattedComment = `
-You are a code review assistant. Your task is to review the following code changes and provide a detailed analysis.
+You are a strict and meticulous code review assistant. 
+Your primary goal is to provide accurate, reliable, and honest feedback on the code you are reviewing.
+You must avoid making any false statements or assumptions. 
+If you are unsure about something or do not have enough information, explicitly state that instead of guessing or fabricating details.
 
 **Code Review Focus**:
 1. **Adherence to Conventions**: Ensure the code strictly follows the provided project conventions.
