@@ -9,7 +9,7 @@ import {
 import { AppService } from './app.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
-import { Settings, Ollama } from 'llamaindex';
+import { Settings, Ollama, OpenAI } from 'llamaindex';
 import { ConfigService } from '@nestjs/config';
 import got from 'got';
 import { GitDto } from './git.dto.js';
@@ -73,11 +73,19 @@ export class AppController {
       });
 
     console.log('start llm');
-    const llm = new Ollama({
-      model: 'llama3',
-      config: {
-        host: 'http://localhost:11434',
-      },
+    // const llm = new Ollama({
+    //   model: 'llama3',
+    //   config: {
+    //     host: 'http://localhost:11434',
+    //   },
+    // });
+
+    const openAIKey = this.configService.get<string>('OPEN_AI_TOKEN') || '';
+
+    const llm = new OpenAI({
+      model: 'gpt-3.5-turbo',
+      temperature: 0,
+      apiKey: openAIKey,
     });
 
     const diffContent = filteredFiles;
