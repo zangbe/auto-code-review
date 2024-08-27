@@ -83,7 +83,7 @@ export class AppController {
     const openAIKey = this.configService.get<string>('OPEN_AI_TOKEN') || '';
 
     const llm = new OpenAI({
-      model: 'gpt-4o-2024-05-13',
+      model: 'gpt-4o-mini-2024-07-18',
       temperature: 0,
       apiKey: openAIKey,
     });
