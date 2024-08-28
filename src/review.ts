@@ -20,9 +20,11 @@ dto.githubToken = githubToken;
 dto.pullRequestNumber = Number(prNumber);
 dto.repository = repo;
 
-got.post('https://secretly-fancy-starfish.ngrok-free.app/review', {
-  json: dto,
-});
+(async () => {
+  got.post('https://secretly-fancy-starfish.ngrok-free.app/review', {
+    json: dto,
+  });
+})();
 
 console.log('review script finish');
 
