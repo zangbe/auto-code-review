@@ -73,20 +73,20 @@ export class AppController {
       });
 
     console.log('start llm');
-    // const llm = new Ollama({
-    //   model: 'llama3',
-    //   config: {
-    //     host: 'http://localhost:11434',
-    //   },
-    // });
-
-    const openAIKey = this.configService.get<string>('OPEN_AI_TOKEN') || '';
-
-    const llm = new OpenAI({
-      model: 'gpt-4o-2024-08-06',
-      temperature: 0,
-      apiKey: openAIKey,
+    const llm = new Ollama({
+      model: 'llama3',
+      config: {
+        host: 'http://localhost:11434',
+      },
     });
+
+    // const openAIKey = this.configService.get<string>('OPEN_AI_TOKEN') || '';
+
+    // const llm = new OpenAI({
+    //   model: 'gpt-4o-2024-08-06',
+    //   temperature: 0,
+    //   apiKey: openAIKey,
+    // });
 
     const diffContent = filteredFiles;
 
