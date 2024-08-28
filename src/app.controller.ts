@@ -73,25 +73,25 @@ export class AppController {
       });
 
     console.log('start llm');
-    // const llm = new Ollama({
-    //   model: 'llama3',
-    //   config: {
-    //     host: 'http://localhost:11434',
-    //   },
-    // });
-
-    const openAIKey = this.configService.get<string>('OPEN_AI_TOKEN') || '';
-
-    const llm = new OpenAI({
-      model: 'gpt-4o-mini-2024-07-18',
-      temperature: 0,
-      apiKey: openAIKey,
+    const llm = new Ollama({
+      model: 'llama3',
+      config: {
+        host: 'http://localhost:11434',
+      },
     });
+
+    // const openAIKey = this.configService.get<string>('OPEN_AI_TOKEN') || '';
+
+    // const llm = new OpenAI({
+    //   model: 'gpt-4o-mini-2024-07-18',
+    //   temperature: 0,
+    //   apiKey: openAIKey,
+    // });
 
     const diffContent = filteredFiles;
 
     const formattedComment = `
-You are a strict and meticulous code review assistant. 
+You are a senior software engineer.
 Your primary goal is to provide accurate, reliable, and honest feedback on the code you are reviewing.
 You must avoid making any false statements or assumptions. 
 If you are unsure about something or do not have enough information, explicitly state that instead of guessing or fabricating details.
