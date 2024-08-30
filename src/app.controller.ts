@@ -65,6 +65,7 @@ export class AppController {
       .filter((file) => file.filename.includes('src/'))
       .filter((file) => !file.filename.includes('module'))
       .filter((file) => !file.filename.includes('spec'))
+      .filter((file) => !file.filename.includes('app'))
       .map((file) => {
         return {
           fileName: file.filename,
