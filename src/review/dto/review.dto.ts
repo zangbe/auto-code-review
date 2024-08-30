@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GitDto {
+export class ReviewDto {
   @ApiProperty({
     required: true,
     nullable: false,

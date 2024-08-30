@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
 import { ConfigModule } from '@nestjs/config';
+import { ReviewModule } from './review/review.module.js';
 
 @Module({
   imports: [
@@ -9,8 +8,9 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: 'src/config/.env',
     }),
+    ReviewModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
