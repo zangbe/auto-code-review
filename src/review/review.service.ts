@@ -18,7 +18,7 @@ export class ReviewService {
       dto?.pullRequestNumber,
     );
 
-    const review = await this.llm.ollama.complete({
+    const review = await this.llm.openAI.complete({
       prompt: this.llm.getPrompt(diffFiles),
     });
 
